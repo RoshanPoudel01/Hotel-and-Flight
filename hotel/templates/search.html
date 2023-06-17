@@ -1,0 +1,82 @@
+
+{% extends 'base_site.html' %}
+{% block maincontent %} 
+{% load crispy_forms_tags %}
+{% load static %}
+ <link rel="stylesheet" href="{% static 'css/custom_slider.css' %}">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% if searchtext %}
+<h1>You Searched For {{searchtext}}</h1>
+<!-- <div class="row mt-2 pt-2">
+  <div class="col-md-4">
+
+      <label for="customRange1" class="form-label">Select Price</label>
+      <input type="range" class="form-range" id="customRange1">
+  </div>
+</div> -->
+
+    {% crispy price_filter.form  %}
+   
+{% if form %}
+<div class="row  mt-2 pt-2">
+  {% for hotels in form %}
+
+  <div class="col-md-4">
+      <div class="card" style="width: 18rem;">
+  {% if hotels.banner_image %}
+          <img src="{{ hotels.banner_image.url }}" class="card-img-top" height="270px" alt="{{hotels.hotel_name}}">
+          {% else %}
+          {% load static %}
+          <img src="{% static 'images/hoteldefault.png' %}" class="card-img-top" alt="{{hotels.hotel_name}}"></a>
+  {% endif %}
+
+          <div class="card-body">
+              <h5 class="card-title">{{ hotels.hotel_name}}</h5>
+                <h6 class="card-title">{{ hotels.city}}</h6>
+              <p class="card-text">Price Per Day:${{ hotels.price_per_day}}</p>
+              <a href="{% url 'hotel:hotel_detail' hotels.id %}" class="btn btn-primary">See more</a>
+          </div>
+       </div>
+  </div>
+{% endfor %}
+
+</div>
+{% else %}
+<h1>No Match  !!!</h1>
+
+{% endif %}
+
+{% else %}
+<h1>You Forgot to search !!!</h1>
+{% endif %}
+  <center>
+  
+
+{% if form.has_previous %}
+
+    <a href="?page={{form.previous_page_number}}">
+
+      <button type="button" class="btn btn-primary btn-sm">Previous Page</button>
+
+    </a>
+
+{% endif%}
+
+{% if form.has_next %}
+
+    <a href="?page={{form.next_page_number}}">
+
+      <button type="button" class="btn btn-secondary btn-sm">Next Page</button>
+
+    </a>
+
+{% endif%}
+  </center>
+</section>
+  <script src="{% static 'js/custom_slider.js' %}"></script>
+
+{% endblock maincontent %}
+

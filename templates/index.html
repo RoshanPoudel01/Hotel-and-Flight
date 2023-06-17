@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+{% include 'navbar.html' %}
+
+<!-- <div class="row mt-2 pt-2">
+    <div class="col-md-4">
+
+        <label for="customRange1" class="form-label">Price</label>
+        <input type="range" class="form-range" id="customRange1">
+    </div>
+</div> -->
+<!-- 
+<div class="row  mt-2 pt-2">
+    {% for hotels in hotel %}
+
+    <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+    {% if hotels.banner_image %}
+            <img src="{{ hotels.banner_image.url }}" class="card-img-top" height="300px" alt="{{hotels.hotel_name}}">
+            {% else %}
+            {% load static %}
+            <img src="{% static 'images/hoteldefault.png' %}" class="card-img-top" alt="{{hotels.hotel_name}}"></a>
+    {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">{{ hotels.hotel_name}}</h5>
+                <p class="card-text">{{ hotels.hotel_description|truncatewords:50}}</p>
+                <a href="{% url 'hotel:hotel_detail' hotels.id %}" class="btn btn-primary">See more</a>
+            </div>
+         </div>
+    </div>
+{% endfor %}
+
+</div> -->
+
+
+<div id="Hotel" class="tabcontent">
+ <div class="row  mt-2 pt-2">
+    {% for hotels in hotel %}
+
+    <div class="col-md-4">
+        <div class="card mb-2" style="width: 18rem;">
+    {% if hotels.banner_image %}
+            <img src="{{ hotels.banner_image.url }}" class="card-img-top" height="300px" alt="{{hotels.hotel_name}}">
+            {% else %}
+            {% load static %}
+            <img src="{% static 'images/hoteldefault.png' %}" class="card-img-top" alt="{{hotels.hotel_name}}"></a>
+    {% endif %}
+
+            <div class="card-body ">
+                <h5 class="card-title">{{ hotels.hotel_name}}</h5>
+                <h6 class="card-title">{{ hotels.city}}</h6>
+                <p class="card-text">Price Per Day:${{ hotels.price_per_day}}</p>
+
+                <a href="{% url 'hotel:hotel_detail' hotels.id %}" class="btn btn-primary">See more</a>
+            </div>
+         </div>
+    </div>
+{% endfor %}
+
+</div>
+</div>
+
+
+{% endblock content %}

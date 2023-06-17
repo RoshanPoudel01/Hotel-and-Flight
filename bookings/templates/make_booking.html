@@ -1,0 +1,65 @@
+
+{% extends 'base_site.html' %}
+
+{% block maincontent %} 
+ <style type="text/css">
+         .li{
+            list-style-type: none !important;
+         }
+        
+      </style>
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- {{form.as_p}}  -->
+     <!-- # this is from the dictionary key in views.py for the required form -->
+{% for field in form%}
+ <div class="form-group my-2">
+    <label> {{field.label_tag}}</label>
+    {{ field }}
+    <span class="text text-danger" >{{ field.errors }}</span>
+
+</div>
+{% endfor %}
+    <span class="text text-danger">{{ form.non_field_errors }}</span>
+
+
+<input type="" value="{{request.user}}" hidden>
+<input type=""  value="{{hotel.hotel_name}}" hidden></br>
+<p>Price Per Day: Rs{{hotel.price_per_day}}</p>
+<input type="" id="id_price_per_day" value="{{hotel.price_per_day}}" hidden>
+    <input type="button" name="price" onclick="datediff()"  class="btn btn-primary" value="Show Total Price" id="">
+    <input type="submit" name="Submit" onclick="datediff()"  class="btn btn-primary" value="Submit" id="">
+</form>
+Total Price: $<p id="total_price">0.00</p>
+<script>
+    function datediff(){
+    var d1=new Date(document.getElementById("id_check_in_date").value);
+    var d2=new Date(document.getElementById("id_check_out_date").value);
+    var price_per_day= document.getElementById("id_price_per_day").value;
+    var diff = d2.getTime() - d1.getTime();  
+    var present=new Date(Date.now());
+    console.log(present)
+    // if(d1<present && d2<present){
+    //     alert('hi');
+    // }
+   
+      if(d1<d2){
+               var daydiff = diff / (1000 * 60 * 60 * 24);   
+    document.getElementById("total_price").innerHTML=daydiff*price_per_day
+      }
+    // console.log(d1);
+    // console.log(d2);
+    // console.log(price_per_day)
+    // console.log(daydiff)
+
+    
+}
+   
+</script>
+
+
+   
+
+{% endblock maincontent %}
+

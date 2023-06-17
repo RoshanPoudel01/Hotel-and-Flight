@@ -1,0 +1,35 @@
+{% extends 'base_site.html' %} 
+{% block maincontent %}
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+  <div class="card p-4">
+    <div class="image d-flex flex-column justify-content-center align-items-center">
+      <a class="btn ">
+        {% if user.image %}
+        <img src="{{ user.image.url }}" alt="image" class="img-responsive" height="200px" width="200px"></a>
+
+        {% else %}
+        {% load static %}
+        <img src="{% static 'images/user.png' %}" alt="default image" class="img-responsive w-100"></a>
+        
+        {% endif %}
+      
+        </a>
+      <span class="name mt-3">{{users.first_name }} {{ users.last_name}}</span>
+      <span class="idd">@{{users.username}}</span>
+     
+     
+      <div class="d-flex mt-2">
+        <button class="btn btn-dark"><a href="{% url 'user:edit_profile' user.id%}">Edit Profile</a></button>
+      </div>
+         <div class="d-flex mt-2">
+        <button class="btn btn-primary"><a href="{% url 'booking:booking_history' user.id%}">Bookings</a></button>
+      </div>
+     
+      <div class="px-2 rounded mt-4 date">
+        <span class="join">{{users.date_joined}}</span>
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% endblock maincontent %}

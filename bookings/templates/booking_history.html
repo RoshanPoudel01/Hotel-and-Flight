@@ -1,0 +1,33 @@
+
+{% extends 'base_site.html' %}
+
+{% block maincontent %} 
+
+<table class="table">
+  <caption>Bookings List</caption>
+  <thead>
+    <tr>
+      <th scope="col">S.N</th>
+      <th scope="col">Check In Date</th>
+      <th scope="col">Check Out Date</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Hotel</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for bookinghistory in booking %}
+    <tr>
+      <th scope="row">{{bookinghistory.id}}</th>
+      <td>{{bookinghistory.check_in_date}}</td>
+      <td>{{bookinghistory.check_out_date}}</td>
+      <td>${{bookinghistory.amount}}</td>
+      <td>{{bookinghistory.hotel.hotel_name}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+   
+
+{% endblock maincontent %}
+

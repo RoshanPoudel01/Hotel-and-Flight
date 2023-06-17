@@ -1,0 +1,20 @@
+{% extends 'base_site.html' %}
+{% block maincontent %}
+  
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+  
+     <!-- # this is from the dictionary key in views.py for the required form -->
+    {{ form.non_field_errors }}
+{% for field in form%}
+ <div class="form-group my-2">
+    <label> {{field.label_tag}}</label>
+    {{ field }}
+    <span class="text text-danger">{{ field.errors }}</span>
+
+</div>
+{% endfor %}
+
+    <input type="submit" name="Submit" class="btn btn-primary" value="Submit" id="">
+</form>
+<a href="{% url 'user:login' %}">Login</a>
+{% endblock maincontent %}
