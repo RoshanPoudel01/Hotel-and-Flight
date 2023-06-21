@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from hotel.models import Hotel
 from .models import Booking
 import stripe
-from django.http import JsonResponse
+from datetime import date
 from django.conf import settings
 
 
@@ -55,7 +55,6 @@ def createBooking(request, hotelid):
                 + "/payment_successful?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url=settings.REDIRECT_DOMAIN + "/payment_cancelled",
             )
-            print("hereqsdjvaskhd")
             booking.save()
             return redirect(checkout_session.url, code=303)
     else:
@@ -67,7 +66,17 @@ login_required
 
 
 def bookingHistory(request, userid):
-    bookinghistory = Booking.objects.filter(user_id=userid)
-    print(bookinghistory)
+    today = date.today()
+    bookinghistory = Booking.objects.filter(user_id=userid, check_in_date__lt=today)
+    upcomingbookings = Booking.objects.filter(user_id=userid, check_in_date__gt=today)
+    return render(request, "booking_history.html", {"booking": bookinghistory,"upcomingbookings":upcomingbookings})
 
-    return render(request, "booking_history.html", {"booking": bookinghistory})
+
+
+def cancelBooking(request, bookingid):
+    # booking = get_object_or_404(Booking, id=bookingid)
+    booking=Booking.objects.get(id=bookingid)
+    booking.amount=500
+    booking.save()
+    print(booking.amount)
+    return redirect(reverse("booking:booking_history", args=(request.user.id,)))

@@ -1,10 +1,41 @@
-
-{% extends 'base_site.html' %}
-
-{% block maincontent %} 
+{% extends 'base_site.html' %} {% block maincontent %}
 
 <table class="table">
-  <caption>Bookings List</caption>
+  <caption>
+    Upcoming Bookings
+  </caption>
+  <thead>
+    <tr>
+      <th scope="col">S.N</th>
+      <th scope="col">Check In Date</th>
+      <th scope="col">Check Out Date</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Hotel</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for upcomingbooking in upcomingbookings %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td>{{upcomingbooking.check_in_date}}</td>
+      <td>{{upcomingbooking.check_out_date}}</td>
+      <td>${{upcomingbooking.amount}}</td>
+      <td>{{upcomingbooking.hotel.hotel_name}}</td>
+      <td>
+        <a href="{% url 'booking:cancel_booking' upcomingbooking.id %}"
+          ><span class="p-2 bg-danger text-white">Cancel</span></a
+        >
+      </td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+<table class="table">
+  <caption>
+    Bookings History
+  </caption>
   <thead>
     <tr>
       <th scope="col">S.N</th>
@@ -17,17 +48,14 @@
   <tbody>
     {% for bookinghistory in booking %}
     <tr>
-      <th scope="row">{{bookinghistory.id}}</th>
+      <th scope="row">{{ forloop.counter }}</th>
       <td>{{bookinghistory.check_in_date}}</td>
       <td>{{bookinghistory.check_out_date}}</td>
       <td>${{bookinghistory.amount}}</td>
       <td>{{bookinghistory.hotel.hotel_name}}</td>
     </tr>
-  {% endfor %}
+    {% endfor %}
   </tbody>
 </table>
 
-   
-
 {% endblock maincontent %}
-
