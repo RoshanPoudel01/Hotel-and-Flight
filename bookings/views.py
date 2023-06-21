@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import BookingForm
-from useraccount.models import User
+from payment.models import UserPayment
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required
 from hotel.models import Hotel
@@ -55,6 +55,8 @@ def createBooking(request, hotelid):
                 + "/payment_successful?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url=settings.REDIRECT_DOMAIN + "/payment_cancelled",
             )
+            booking.transaction_id = checkout_session.id
+            booking.status = False
             booking.save()
             return redirect(checkout_session.url, code=303)
     else:
@@ -67,16 +69,20 @@ login_required
 
 def bookingHistory(request, userid):
     today = date.today()
-    bookinghistory = Booking.objects.filter(user_id=userid, check_in_date__lt=today)
-    upcomingbookings = Booking.objects.filter(user_id=userid, check_in_date__gt=today)
+    bookinghistory = Booking.objects.filter(user_id=userid, check_in_date__lt=today,status=True)
+    upcomingbookings = Booking.objects.filter(user_id=userid, check_in_date__gt=today, status=True)
     return render(request, "booking_history.html", {"booking": bookinghistory,"upcomingbookings":upcomingbookings})
 
 
 
-def cancelBooking(request, bookingid):
-    # booking = get_object_or_404(Booking, id=bookingid)
+def cancelBooking(request):
+    bookingid=request.POST.get("bookingid")
     booking=Booking.objects.get(id=bookingid)
-    booking.amount=500
+    payment=UserPayment.objects.get(stripe_checkout_id=booking.transaction_id)
+    booking.status=False
+    final_amount=booking.amount-booking.amount*0.8
+    booking.amount=final_amount
+    payment.amount=final_amount
     booking.save()
-    print(booking.amount)
+    payment.save()
     return redirect(reverse("booking:booking_history", args=(request.user.id,)))

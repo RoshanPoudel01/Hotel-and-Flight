@@ -23,9 +23,14 @@
       <td>${{upcomingbooking.amount}}</td>
       <td>{{upcomingbooking.hotel.hotel_name}}</td>
       <td>
-        <a href="{% url 'booking:cancel_booking' upcomingbooking.id %}"
-          ><span class="p-2 bg-danger text-white">Cancel</span></a
+        <button
+          data-bookingid="{{upcomingbooking.id}}"
+          class="btn btn-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
         >
+          Cancel
+        </button>
       </td>
     </tr>
 
@@ -57,5 +62,59 @@
     {% endfor %}
   </tbody>
 </table>
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cancel Booking</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are You Sure You Want to Cancel Booking?
+        <form
+          id="deleteform"
+          method="post"
+          action="{% url 'booking:cancel_booking'%}"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="bookingid" id="_bookingid" />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          No
+        </button>
+        <button id="deletebutton" type="submit" class="btn btn-danger">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-{% endblock maincontent %}
+{% endblock maincontent %} {% block script%} {{ block.super }}
+<script type="text/javascript">
+  $(document).ready(function () {
+    let modal = document.getElementById("exampleModal");
+    modal.addEventListener("show.bs.modal", function (evt) {
+      let btn = evt.relatedTarget;
+      let bookingid = btn.dataset.bookingid;
+      $("#_bookingid").val(bookingid);
+    });
+    $("#deletebutton").click(function () {
+      $("#deleteform").submit();
+    });
+  });
+</script>
+{% endblock script %}

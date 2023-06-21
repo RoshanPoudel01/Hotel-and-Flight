@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from bookings.forms import BookingForm
 from payment.models import UserPayment
 from useraccount.models import User
+from bookings.models import Booking
 import stripe
 import time
 
@@ -15,16 +16,20 @@ import time
 def payment_successful(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     checkout_session_id = request.GET.get("session_id", None)
-   
+    booking_form = BookingForm(request.POST)
+
     session = stripe.checkout.Session.retrieve(checkout_session_id)
-    print(session)
+    print(session.amount_subtotal)
     customer = stripe.Customer.retrieve(session.customer)
     user_payment = UserPayment(
-        app_user=request.user, stripe_checkout_id=checkout_session_id, payment_bool=True
+        app_user=request.user, stripe_checkout_id=checkout_session_id, payment_bool=True,amount=session.amount_subtotal/100
     )
-    user=User(stripe_session=checkout_session_id)
+    user=User.objects.filter(id=request.user.id)
+    user.update(stripe_session=checkout_session_id)
+    bookings=Booking.objects.filter(user_id=request.user.id,status=False,transaction_id=checkout_session_id)
+    bookings.update(status=True)
     user_payment.save()
-    user.save()
+    # user.save()
     # print(customer)
     return render(request, "payment_successful.html", {"customer": customer})
 

@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from flight.forms import FlightForm
 from .forms import HotelCreationForm, ImageForm, PhoneForm
-from .filters import HotelFilter
+# from .filters import HotelFilter
 
 # Create your views here.
 def add_hotel(request):
@@ -60,7 +60,7 @@ def hotel_detail_view(request, hotelid):
 
 
 def search_view(request):
-    price_filter = HotelFilter(request.GET)
+    # price_filter = HotelFilter(request.GET)
     if request.method == "POST":
         searchtext = request.POST["searchtext"].title()
         searchresult = Hotel.objects.filter(
@@ -79,7 +79,7 @@ def search_view(request):
             # if page is empty then return last page
             page_obj = paginator.page(paginator.num_pages)
         return render(
-            request, "search.html", {"searchtext": searchtext, "form": page_obj,'price_filter':price_filter}
+            request, "search.html", {"searchtext": searchtext, "form": page_obj}
         )
     else:
         return render(request, "search.html")

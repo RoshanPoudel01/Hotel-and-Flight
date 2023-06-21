@@ -45,7 +45,7 @@ Total Price: $<p id="total_price">0.00</p>
     // }
    
       if(d1<d2){
-               var daydiff = diff / (1000 * 60 * 60 * 24);   
+               var daydiff = (diff / (1000 * 60 * 60 * 24))+1;   
     document.getElementById("total_price").innerHTML=daydiff*price_per_day
       }
     // console.log(d1);

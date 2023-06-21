@@ -21,10 +21,11 @@ class Booking(TimeStamp):
         on_delete=models.CASCADE)
     hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE)
     status = models.BooleanField(choices=BOOL_CHOICES,default=True)
+    transaction_id = models.CharField(max_length=500, null=True, blank=True)
 
 
     def __str__(self):
         return self.hotel.hotel_name
     
     def duration(self):
-        return (self.check_out_date - self.check_in_date).days
+        return ((self.check_out_date - self.check_in_date).days)+1

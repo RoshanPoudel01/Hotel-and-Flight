@@ -8,6 +8,6 @@ urlpatterns = [
     # path("booking/<int:hotelid>", CreateBooking.as_view(), name="create_booking"),
     path("booking/<int:hotelid>", createBooking, name="create_booking"),
     path("booking-history/<int:userid>", bookingHistory, name="booking_history"),
-    path("cancel-booking/<int:bookingid>", cancelBooking, name="cancel_booking"),
+    path("cancel-booking/", cancelBooking, name="cancel_booking"),
 
     ]
