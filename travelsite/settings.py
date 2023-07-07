@@ -41,12 +41,10 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "flight",
     "hotel",
+    "client",
     "useraccount",
     "bookings",
     "payment",
-    "django_filters",
-    "crispy_forms",
-    "crispy_bootstrap4",
 ]
 
 MIDDLEWARE = [
@@ -161,8 +159,4 @@ if DEBUG:
     STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 
-REDIRECT_DOMAIN = 'http://127.0.0.1:8000'
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+REDIRECT_DOMAIN = 'http://127.0.0.1:8080'

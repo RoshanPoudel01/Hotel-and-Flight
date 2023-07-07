@@ -1,25 +1,16 @@
 
 {% extends 'base_site.html' %}
 {% block maincontent %} 
-{% load crispy_forms_tags %}
-{% load static %}
- <link rel="stylesheet" href="{% static 'css/custom_slider.css' %}">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% load static %}
 {% if searchtext %}
 <h1>You Searched For {{searchtext}}</h1>
-<!-- <div class="row mt-2 pt-2">
-  <div class="col-md-4">
 
-      <label for="customRange1" class="form-label">Select Price</label>
-      <input type="range" class="form-range" id="customRange1">
-  </div>
-</div> -->
-
-    {% crispy price_filter.form  %}
-   
+<form method="post" action="{% url 'hotel:sort_hotel'%}">{% csrf_token %}
+    {{ sort.as_p }}
+    <input type="hidden" name="searchtext" value="{{searchtext}}">
+    <button class="btn btn-primary" type="submit">Sort</button>
+</form>
 {% if form %}
 <div class="row  mt-2 pt-2">
   {% for hotels in form %}
@@ -52,6 +43,7 @@
 {% else %}
 <h1>You Forgot to search !!!</h1>
 {% endif %}
+
   <center>
   
 

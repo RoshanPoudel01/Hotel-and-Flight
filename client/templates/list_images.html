@@ -1,0 +1,110 @@
+{% extends 'front.html' %} {% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    {% include 'sidebar.html' %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+      >
+        <h1 class="h6">Images</h1>
+      </div>
+      <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>S.N</th>
+              <th>Hotel Name</th>
+              <th>Image</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for hotel in images %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{hotel.hotel.hotel_name}}</td>
+              <td>
+                <img height="150px" width="150px" src="{{hotel.image.url}}" />
+              </td>
+
+              <td>
+                <button
+                  data-hotelid="{{hotel.id}}"
+                  class="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                  Modal title
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                Are You Sure You Want to delete this Hotel?
+                <form
+                  id="deleteform"
+                  method="post"
+                  action="{% url 'client:delete_image' %}"
+                >
+                  {% csrf_token %}
+                  <input type="text" name="hotelid" id="_hotelid" />
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  No
+                </button>
+                <button id="deletebutton" type="submit" class="btn btn-danger">
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %} {% block script%} {{ block.super }}
+<script type="text/javascript">
+  $(document).ready(function () {
+    let modal = document.getElementById("exampleModal");
+    modal.addEventListener("show.bs.modal", function (evt) {
+      let btn = evt.relatedTarget;
+      let hotelid = btn.dataset.hotelid;
+      $("#_hotelid").val(hotelid);
+    });
+    $("#deletebutton").click(function () {
+      $("#deleteform").submit();
+    });
+  });
+</script>
+{% endblock script %}

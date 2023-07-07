@@ -1,0 +1,31 @@
+{% extends 'base_site.html' %} {% block maincontent %} {% load static %}
+
+<div class="row  mt-2 pt-2">
+    {% for hotel in hotels %}
+<!-- <form method="post" action="{% url 'hotel:sort_hotel'%}">{% csrf_token %}
+    {{ sort.as_p }}
+    <input type="hidden" name="searchtext" value="{{searchtext}}">
+    <button class="btn btn-primary" type="submit">Sort</button>
+</form> -->
+
+  <div class="col-md-4">
+      <div class="card" style="width: 18rem;">
+  {% if hotel.banner_image %}
+          <img src="{{ hotel.banner_image.url }}" class="card-img-top" height="270px" alt="{{hotel.hotel_name}}">
+          {% else %}
+          {% load static %}
+          <img src="{% static 'images/hoteldefault.png' %}" class="card-img-top" alt="{{hotel.hotel_name}}"></a>
+  {% endif %}
+
+          <div class="card-body">
+              <h5 class="card-title">{{ hotel.hotel_name}}</h5>
+                <h6 class="card-title">{{ hotel.city}}</h6>
+              <p class="card-text">Price Per Day:${{ hotel.price_per_day}}</p>
+              <a href="{% url 'hotel:hotel_detail' hotel.id %}" class="btn btn-primary">See more</a>
+          </div>
+       </div>
+  </div>
+{% empty %}
+<p>No hotels found.</p>
+{% endfor %}
+{% endblock maincontent %}

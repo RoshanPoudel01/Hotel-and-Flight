@@ -29,7 +29,19 @@
             >Flights</a
           >
         </li>
-
+        {% if request.user.is_authenticated and request.user.is_client %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'client:clientdashboard' %}"
+            >Client Dashboard</a
+          >
+        </li>
+        {% endif %}
+        
+         <li class="nav-item">
+          <a class="nav-link" href="{% url 'user:make_client'  %}"
+            >Become Client</a
+          >
+        
         {% if request.user.is_authenticated %}
         <li class="nav-item">
           <a
@@ -37,6 +49,8 @@
             href="{% url 'user:userprofile' user.username user.id %}"
             >My Profile</a
           >
+        </li>
+       
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'user:logout' %}">Log Out</a>

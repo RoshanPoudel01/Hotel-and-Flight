@@ -1,4 +1,5 @@
 from django.db import models
+from useraccount.models import User
 
 
 # Create your models here.
@@ -26,7 +27,9 @@ class Hotel(TimeStamp):
     city = models.CharField(max_length=255)
     banner_image=models.ImageField(upload_to="hotelimages")
     price_per_day=models.FloatField()
-    
+    added_by=models.ForeignKey(User,on_delete=models.CASCADE)
+    class Meta:
+        ordering = ['-id']
     def __str__(self):
         return self.hotel_name
     def get_amneties(self):

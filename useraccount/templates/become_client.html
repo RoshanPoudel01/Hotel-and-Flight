@@ -1,0 +1,11 @@
+{% extends 'base_site.html' %} {% block maincontent %}
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+  {% if user.stripe_customer_id %}
+  <p>You are already our client</p>
+
+  {% else %}
+  <p>Click the link below to create a connected account:</p>
+  <a href="{{ account_link_url }}" target="_blank">Create Account</a>
+  {% endif %}
+</div>
+{% endblock maincontent %}

@@ -1,0 +1,33 @@
+{% extends 'front.html' %} {% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    {% include 'sidebar.html' %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+      >
+        <h1 class="h6">Add Phone</h1>
+      </div>
+      <div class="mt-1 mb-5 pt-2 pb-2">
+        <form method="post" action="" enctype="multipart/form-data">
+          {% csrf_token %} {{ phone.non_field_errors }} {% for field in phone%}
+          <div class="form-group my-2">
+            <label> {{field.label_tag}}</label>
+            {{ field }}
+            <span class="text text-danger">{{ field.errors }}</span>
+          </div>
+          {% endfor %}
+          <input
+            class="btn btn-primary float-end"
+            type="submit"
+            name="submit"
+            value="Submit"
+          />
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %}

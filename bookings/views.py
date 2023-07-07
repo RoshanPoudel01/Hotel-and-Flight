@@ -35,9 +35,11 @@ def createBooking(request, hotelid):
             booking.hotel_id = hotel.id
             booking.user_id = request.user.id
             booking.amount = booking.duration() * hotel.price_per_day
-            checkout_session = stripe.checkout.Session.create(
-                payment_method_types=["card"],
-                line_items=[
+            fee=booking.amount * 0.25
+            print( hotel.added_by.id)
+            checkout_session=stripe.checkout.Session.create(
+                mode="payment",
+                 line_items=[
                     {
                         "price_data": {
                             "currency": "usd",
@@ -49,12 +51,16 @@ def createBooking(request, hotelid):
                         "quantity": 1,
                     },
                 ],
-                mode="payment",
-                customer_creation="always",
+                payment_intent_data={
+                    "application_fee_amount":  int(fee)*100,
+                     "transfer_data": {"destination": hotel.added_by.stripe_customer_id},
+                        },
+                        customer_creation="always",
                 success_url=settings.REDIRECT_DOMAIN
                 + "/payment_successful?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url=settings.REDIRECT_DOMAIN + "/payment_cancelled",
-            )
+                )
+            
             booking.transaction_id = checkout_session.id
             booking.status = False
             booking.save()

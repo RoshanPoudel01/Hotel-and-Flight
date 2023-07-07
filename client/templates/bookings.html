@@ -1,0 +1,108 @@
+{% extends 'front.html' %} {% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    {% include 'sidebar.html' %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+      >
+        <h1 class="h6">Hotel Bokings</h1>
+      </div>
+      <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>S.N</th>
+              <th>Hotel Name</th>
+              <th>Check In Date</th>
+              <th>Check Out Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for booking in bookings %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{booking.hotel.hotel_name }}</td>
+              <td>{{booking.check_in_date}}</td>
+              <td>{{booking.check_out_date}}</td>
+              <td>
+                {% if booking.status %}
+                <span class="badge bg-success ">
+                  Booked
+                </span>
+                {% elif not booking.status  %}
+                <span class="badge bg-danger"> Cancelled</span>
+               
+                {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <!-- <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                  Modal title
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                Are You Sure You Want to delete this booking?
+                <form
+                  id="deleteform"
+                  method="post"
+                  action="{% url 'client:delete_hotel' %}"
+                >
+                  {% csrf_token %}
+                  <input type="text" name="bookingid" id="_bookingid" />
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  No
+                </button>
+                <button id="deletebutton" type="submit" class="btn btn-danger">
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </main>
+  </div>
+</div>
+
+{% endblock %} {% block script%} {{ block.super }}
+<!-- <script type="text/javascript">
+  $(document).ready(function () {
+    let modal = document.getElementById("exampleModal");
+    modal.addEventListener("show.bs.modal", function (evt) {
+      let btn = evt.relatedTarget;
+      let hotelid = btn.dataset.hotelid;
+      $("#_hotelid").val(hotelid);
+    });
+    $("#deletebutton").click(function () {
+      $("#deleteform").submit();
+    });
+  });
+</script> -->
+{% endblock script %}

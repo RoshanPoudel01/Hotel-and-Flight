@@ -20,13 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("site/admin/", admin.site.urls),
     path("", include("hotel.urls", namespace="hotel")),
     path("", include("flight.urls", namespace="flight")),
     path("", include("payment.urls", namespace="payment")),
 
     path("", include("bookings.urls", namespace="booking")),
     path("", include("useraccount.urls", namespace="user")),
+    path("", include("client.urls", namespace="client")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "Travel Admin"

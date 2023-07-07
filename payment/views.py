@@ -16,10 +16,9 @@ import time
 def payment_successful(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     checkout_session_id = request.GET.get("session_id", None)
-    booking_form = BookingForm(request.POST)
 
     session = stripe.checkout.Session.retrieve(checkout_session_id)
-    print(session.amount_subtotal)
+    print(session)
     customer = stripe.Customer.retrieve(session.customer)
     user_payment = UserPayment(
         app_user=request.user, stripe_checkout_id=checkout_session_id, payment_bool=True,amount=session.amount_subtotal/100

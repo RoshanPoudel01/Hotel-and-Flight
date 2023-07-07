@@ -6,6 +6,10 @@ from django.contrib.auth import get_user_model
 from useraccount.forms import UserSignupForm, UserEditForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.conf import settings
+
+import stripe
+stripe.api_key = "sk_test_51N2DKlBDe5c2rfDAZlaYAUJWD6ORem7RLEZFoDAZcKyPx55mSltZ2L2KrgeHboSO7hr7pSzcO1OpvGVhdosoeEDW00VrQx4XTO"
 
 
 # Create your views here.
@@ -70,3 +74,22 @@ def user_profile_edit(request, id):
         )
 
     return render(request, "profile_edit.html", {"user": userss})
+
+@login_required
+def make_client(request):
+    user=User.objects.get(id=request.user.id)
+    if user.stripe_customer_id is None:
+        acount=stripe.Account.create(type="express")
+        user.stripe_customer_id=acount.id
+        user.is_client=True
+        user.save()
+    else:
+        acount = stripe.Account.retrieve(user.stripe_customer_id)
+
+    account_link=stripe.AccountLink.create(
+        account=acount.id,
+        refresh_url="https://www.google.com/",
+        return_url=settings.REDIRECT_DOMAIN,
+        type="account_onboarding",
+        )
+    return render(request, "become_client.html", {"account_link_url": account_link.url, "user": user})
