@@ -2,11 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from .models import Hotel, Amnities
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.urls import reverse
-from django.contrib import messages
-from django.http import HttpResponseRedirect
+from bookings.models import Booking
 from flight.forms import FlightForm
-from .forms import HotelCreationForm, ImageForm, PhoneForm, PriceRangeForm
+from .forms import  PriceRangeForm
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 # from .filters import HotelFilter
 
 # Create your views here.
@@ -87,3 +87,6 @@ def sort_hotel(request):
         return render(request, 'sort_hotel.html', context)
     else:
         return render(request, 'search.html', {'sort': form})
+    
+
+

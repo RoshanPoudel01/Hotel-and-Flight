@@ -1,6 +1,7 @@
 from django.db import models
 from useraccount.models import User
 from hotel.models import Hotel
+from flight.models import Flight
 from django.db.models.functions import Now
 
 # Create your models here.
@@ -19,6 +20,7 @@ class Booking(TimeStamp):
     amount=models.FloatField()
     user=models.ForeignKey(User ,
         on_delete=models.CASCADE)
+    
     hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE)
     status = models.BooleanField(choices=BOOL_CHOICES,default=True)
     transaction_id = models.CharField(max_length=500, null=True, blank=True)
@@ -29,3 +31,12 @@ class Booking(TimeStamp):
     
     def duration(self):
         return ((self.check_out_date - self.check_in_date).days)+1
+    
+
+class FlightBooking(TimeStamp):
+    amount=models.FloatField(null=True, blank=True)
+    user=models.ForeignKey(User ,
+        on_delete=models.CASCADE)
+    flight=models.ForeignKey(Flight,on_delete=models.CASCADE)
+    status = models.BooleanField(choices=BOOL_CHOICES,default=True)
+    transaction_id = models.CharField(max_length=500,null=True, blank=True)

@@ -75,6 +75,11 @@ def user_profile_edit(request, id):
 
     return render(request, "profile_edit.html", {"user": userss})
 
+
+
+def makeclientpage(request):
+    return render(request, "become_client.html")
+
 @login_required
 def make_client(request):
     user=User.objects.get(id=request.user.id)

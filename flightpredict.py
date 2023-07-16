@@ -211,8 +211,6 @@ X = data_train.loc[:, ['Total_Stops', 'Journey_day', 'Journey_month', 'Dep_hour'
 y = data_train.iloc[:, 1]
 # print(y.head())
 
-
-
 X_train, X_test, y_train, y_test = train_test_split(X.values, y, test_size = 0.2, random_state = 42)
 reg_rf = RandomForestRegressor()
 reg_rf.fit(X_train, y_train)
@@ -241,12 +239,12 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_leaf': min_samples_leaf}
 # search across 100 different combinations
 rf_random = RandomizedSearchCV(estimator = reg_rf, param_distributions = random_grid,scoring='neg_mean_squared_error', n_iter =10,cv=5,verbose=2,random_state=42,n_jobs=1)
-rf_random.fit(X_train.values,y_train)
+# rf_random.fit(X_train.values,y_train)
+rf_random.fit(X_train,y_train)
 prediction = rf_random.predict(X_test)
 print('MAE:', metrics.mean_absolute_error(y_test, prediction))
 print('MSE:', metrics.mean_squared_error(y_test, prediction))
 print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, prediction)))
-
 
 import pickle
 # open a file, where you ant to store the data

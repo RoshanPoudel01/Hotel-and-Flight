@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import BookingForm
+
 from payment.models import UserPayment
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required
@@ -10,18 +11,9 @@ from datetime import date
 from django.conf import settings
 
 
-# Create your views here.
 
-# class CreateBooking(CreateView):
-#     model = Booking
-#     form_class = BookingForm
-#     template_name = "make_booking.html"
-#     success_url= reverse_lazy("hotels:homepage")
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         form.save()
-#         return super().form_valid(form)
+
+# Create your views here.
 
 
 @login_required
@@ -70,17 +62,15 @@ def createBooking(request, hotelid):
     return render(request, "make_booking.html", {"form": booking_form, "hotel": hotel})
 
 
-login_required
-
-
+@login_required
 def bookingHistory(request, userid):
     today = date.today()
     bookinghistory = Booking.objects.filter(user_id=userid, check_in_date__lt=today,status=True)
-    upcomingbookings = Booking.objects.filter(user_id=userid, check_in_date__gt=today, status=True)
+    upcomingbookings = Booking.objects.filter(user_id=userid, check_in_date__gte=today, status=True)
     return render(request, "booking_history.html", {"booking": bookinghistory,"upcomingbookings":upcomingbookings})
 
 
-
+@login_required
 def cancelBooking(request):
     bookingid=request.POST.get("bookingid")
     booking=Booking.objects.get(id=bookingid)
@@ -92,3 +82,4 @@ def cancelBooking(request):
     booking.save()
     payment.save()
     return redirect(reverse("booking:booking_history", args=(request.user.id,)))
+

@@ -9,5 +9,6 @@ urlpatterns = [
     path("booking/<int:hotelid>", createBooking, name="create_booking"),
     path("booking-history/<int:userid>", bookingHistory, name="booking_history"),
     path("cancel-booking/", cancelBooking, name="cancel_booking"),
+   
 
     ]

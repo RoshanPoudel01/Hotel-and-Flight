@@ -1,11 +1,19 @@
 {% extends 'base_site.html' %} {% block maincontent %}
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+<div
+  class="container mt-4 mb-4 p-3 d-flex justify-content-center mh-100"
+  style="height: 400px"
+>
   {% if user.stripe_customer_id %}
   <p>You are already our client</p>
 
   {% else %}
-  <p>Click the link below to create a connected account:</p>
-  <a href="{{ account_link_url }}" target="_blank">Create Account</a>
+  <h2>Click the link to create a connected account-></h2>
+
+  <h2>
+    <a href="{{ account_link_url }}" class="text-primary" target="_blank"
+      >Create Account</a
+    >
+  </h2>
   {% endif %}
 </div>
 {% endblock maincontent %}

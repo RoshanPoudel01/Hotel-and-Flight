@@ -9,7 +9,11 @@
 </div> -->
 
 <div class="row mt-2 pt-2">
-  <form action="" method="post" enctype="multipart/form-data">
+  <form
+    action="{% url 'flight:flight'%}"
+    method="post"
+    enctype="multipart/form-data"
+  >
     {% csrf_token %}
 
     <!-- # this is from the dictionary key in views.py for the required form -->
@@ -21,10 +25,24 @@
       <span class="text text-danger">{{ field.errors }}</span>
     </div>
     {% endfor %}
+    <input
+      type="submit"
+      name="Submit"
+      class="btn btn-primary"
+      value="Submit"
+      id=""
+    />
   </form>
 </div>
 <div>
   <p class="text text-center">Predicted Price=Rs.{{prediction_text}}</p>
+  <p>{{arrival_date}}</p>
+  <form method="post" action="{% url 'flight:book_flight' %}">
+    {% csrf_token %}
+    <input type="text" name="flightid" value="{{flightid}}" />
+    <input type="text" name="price" value="{{prediction_text}}" />
+    <button type="submit" class="btn btn-info">Book Flight</button>
+  </form>
 </div>
 
 {% endblock content %}
