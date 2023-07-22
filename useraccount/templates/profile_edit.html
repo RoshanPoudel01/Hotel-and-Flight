@@ -5,7 +5,7 @@
      {% csrf_token %}
   
     {{ form.non_field_errors }}
-    {% for user in user%}
+    {% for user in userprofile%}
      <div class="form-group my-2">
         <label> {{user.label_tag}}</label>
         {{ user }}

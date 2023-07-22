@@ -9,9 +9,22 @@ class TimeStamp(models.Model):
 
     class Meta:
         abstract = True
+class AmnitiesOptions(models.TextChoices):
+    ROOMSERVICE = "Room Service", "Room Service"
+    PARKING = "Parking", "Parking"
+    WIFI = "Wifi", "Wifi"
+    SWIMMINGPOOL = "Swimming Pool", "Swimming Pool"
+    GYM = "Gym", "Gym"
+    SPA = "Spa", "Spa"
+    GARDEN = "Garden", "Garden"
+    CHILDRENSPLAYAREA = "Children's Play Area", "Children's Play Area"
+    BAR = "Bar", "Bar"
+   
+
+    
 
 class Amnities(TimeStamp):
-    amenity=models.CharField(max_length=100)
+    amenity=models.CharField(max_length=255,choices=AmnitiesOptions.choices)
 
     def __str__(self):
         return self.amenity

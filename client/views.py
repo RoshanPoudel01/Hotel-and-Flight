@@ -4,6 +4,9 @@ from django.urls import  reverse
 from django.http import HttpResponseRedirect
 from .forms import HotelCreationForm, ImageForm, PhoneForm
 from hotel.models import Hotel,Image,Phone
+from django.http import HttpResponse
+import csv
+from django.contrib import messages 
 
 from bookings.models import Booking
 
@@ -22,10 +25,11 @@ def add_hotel(request):
     form = HotelCreationForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         usr=form.save(commit=False)
-        print(request.user.id)
         usr.added_by= request.user
         usr.save()
-        return HttpResponseRedirect(reverse("client:clientdashboard"))
+        form.save_m2m()
+        messages.success(request, "Hotel Added Successfully")
+        return HttpResponseRedirect(reverse("client:list_hotel"))
     return render(
         request,
         "hotel_add.html",
@@ -49,6 +53,7 @@ def edit_hotel(request,hotelid):
     form = HotelCreationForm(request.POST or None, request.FILES or None,instance=hotel)
     if form.is_valid():
         form.save()
+        messages.success(request, "Hotel Edited Successfully")
         return HttpResponseRedirect(reverse("client:list_hotel"))
     return render(request,"hotel_add.html",{"form":form})
 
@@ -58,6 +63,8 @@ def delete_hotel(request):
     hotelid = request.POST.get("hotelid")
     hotel = get_object_or_404(Hotel, id=hotelid)
     hotel.delete()
+    messages.success(request, "Hotel Deleted Successfully")
+
     return HttpResponseRedirect(reverse("client:list_hotel"))
 
 @login_required
@@ -69,6 +76,8 @@ def add_phone(request,hotelid):
         phn=form.save(commit=False)
         phn.hotel=hotel
         phn.save()
+        messages.success(request, "Hotel Phone Number Added Successfully")
+
         return HttpResponseRedirect(reverse("client:list_hotel"))
     return render(request,"add_phone.html",{"phone":form})
 
@@ -82,6 +91,8 @@ def add_images(request,hotelid):
         for i in images:
             imag=Image.objects.create(image=i,hotel=hotel)
             imag.save()
+            messages.success(request, "Hotel Image Added Successfully")
+
         return HttpResponseRedirect(reverse("client:list_hotel"))
     return render(request,"add_image.html",{"image":form})
     
@@ -116,6 +127,8 @@ def delete_image(request):
     imageid = request.POST.get("hotelid")
     image = get_object_or_404(Image, id=imageid)
     image.delete()
+    messages.success(request, "Hotel Image Deleted Successfully")
+
     return HttpResponseRedirect(reverse("client:list_image"))
 
 
@@ -126,6 +139,8 @@ def delete_phone(request):
     phoneid = request.POST.get("hotelid")
     phone = get_object_or_404(Phone, id=phoneid)
     phone.delete()
+    messages.success(request, "Hotel Phone Number Deleted Successfully")
+
     return HttpResponseRedirect(reverse("client:list_phone"))
 
 
@@ -134,7 +149,7 @@ def delete_phone(request):
 def list_bookings(request):
     user=request.user
     hotels = Hotel.objects.filter(added_by=user)
-    print(hotels)
+    
     if hotels:
         bookings = Booking.objects.filter(hotel__in=hotels)
         return render(request,'bookings.html',{'bookings':bookings})
@@ -142,3 +157,42 @@ def list_bookings(request):
     return render(request,'bookings.html')
 
 
+@login_required
+@user_passes_test(user_check,redirect_field_name="hotel:homepage")
+def export_bookings(request):
+    user=request.user
+    hotels = Hotel.objects.filter(added_by=user)
+    
+    if hotels:
+        bookings = Booking.objects.filter(hotel__in=hotels)
+
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="bookings.csv"'},
+        )
+        
+        writer = csv.writer(response)
+        writer.writerow(["Hotel Name", "Check In Date", "Check Out Date",])
+
+        for booking in bookings:
+            writer.writerow([ booking.hotel.hotel_name,booking.check_in_date, booking.check_out_date,])
+
+        return response
+    
+@login_required
+@user_passes_test(user_check,redirect_field_name="hotel:homepage")
+def export_hotels(request):
+    user=request.user
+    hotels = Hotel.objects.filter(added_by=user)
+
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="hotels.csv"'},
+    )
+    
+    writer = csv.writer(response)
+    writer.writerow(["Hotel Name", "Email", "City","Price Per Day"])
+
+    for hotel in hotels:
+        writer.writerow([ hotel.hotel_name, hotel.email,hotel.city,hotel.price_per_day])
+    return response

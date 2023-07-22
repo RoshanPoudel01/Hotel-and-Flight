@@ -48,11 +48,12 @@ class SignupView(CreateView):
 @login_required
 def user_profile(request, user, id):
     user = get_object_or_404(User, username=user, id=id)
+    userss = UserEditForm(request.POST or None, request.FILES or None, instance=user)
 
     return render(
         request,
         "profile.html",
-        {"users": user},
+        {"users": user, "userprofile": userss,},
     )
 
 
@@ -73,7 +74,7 @@ def user_profile_edit(request, id):
             )
         )
 
-    return render(request, "profile.html", {"userprofile": userss})
+    return render(request, "profile_edit.html", {"userprofile": userss})
 
 
 

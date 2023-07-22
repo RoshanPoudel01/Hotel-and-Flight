@@ -4,12 +4,17 @@
   <div class="row">
     {% include 'sidebar.html' %}
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      {%include 'message.html'%}
       <div
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
       >
         <h1 class="h6">Hotel List</h1>
       </div>
-      <div class="card-body">
+      <a href="{% url 'client:export_hotels'%}" class="btn btn-primary"
+        >Export Hotel</a
+      >
+
+      <div class="card-body mt-2">
         <table id="example1" class="table table-bordered table-striped">
           <thead>
             <tr>

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import clientdashboard, add_hotel, add_phone, add_images,list_hotel,edit_hotel,delete_hotel,list_image,list_phone,delete_image,delete_phone,list_bookings
+from .views import clientdashboard, add_hotel, add_phone, add_images,list_hotel,edit_hotel,delete_hotel,list_image,list_phone,delete_image,delete_phone,list_bookings,export_bookings,export_hotels
 
 
 app_name = "client"
@@ -16,6 +16,8 @@ urlpatterns = [
     path("deleteimage/", delete_image, name="delete_image"),
     path("deletephone/", delete_phone, name="delete_phone"),
     path("listbookings/", list_bookings, name="list_bookings"),
+    path("exportbookings/", export_bookings, name="export_bookings"),
+    path("exporthotels/", export_hotels, name="export_hotels"),
     
 
 ]
