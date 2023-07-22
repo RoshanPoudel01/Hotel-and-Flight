@@ -73,7 +73,7 @@ def user_profile_edit(request, id):
             )
         )
 
-    return render(request, "profile_edit.html", {"user": userss})
+    return render(request, "profile.html", {"userprofile": userss})
 
 
 

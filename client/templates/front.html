@@ -25,9 +25,19 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
-    <link rel="stylesheet" href="{% static 'css/table.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/lte.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/responsive.css'%}" />
+
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'%}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css'%}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css'%}"
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -47,11 +57,18 @@
   ></script>
   <script src="{% static 'js/adjquery.js'%}"></script>
 
-  <script src="{% static 'js/table.js'%}"></script>
-  <script src="{% static 'js/bs4.js'%}"></script>
-  <script src="{% static 'js/datatable.js'%}"></script>
-  <script src="{% static 'js/responsivetable.js'%}"></script>
-
+  <script src="{% static 'plugins/datatables/jquery.dataTables.min.js'%}"></script>
+  <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js'%}"></script>
+  <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js'%}"></script>
+  <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js'%}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+  <script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js'%}"></script>
+  <script src="{%static 'plugins/jszip/jszip.min.js'%}"></script>
+  <!-- <script src="{%static 'plugins/pdfmake/pdfmake.min.js'%}"></script>
+  <script src="{%static 'plugins/pdfmake/vfs_fonts.js'%}"></script> -->
+  <script src="{%static 'plugins/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+  <script src="{%static 'plugins/datatables-buttons/js/buttons.print.min.js'%}"></script>
+  <script src="{%static 'plugins/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
   <script>
     $(function () {
       $("#example1")

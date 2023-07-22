@@ -340,39 +340,3 @@ def flightpredict(request):
                 return render(request,'predict.html',{'flight':flight_form,"prediction_text":output,"flightid":flight.id})
        
     return render(request,'flight.html',{'flight':flight_form})
-
-
-@login_required
-def book_flight(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-
-    if request.method == 'POST':
-        flight_id = int(request.POST.get('flightid'))
-        predicted_price = float(request.POST.get('price'))
-        flight=Flight.objects.get(id=flight_id)
-      
-        checkout_session=stripe.checkout.Session.create(
-            mode="payment",
-             line_items=[
-                {
-                    "price_data": {
-                        "currency": "usd",
-                        "unit_amount": math.floor(predicted_price)*100,
-                        "product_data": {
-                            "name": "Flight booking",
-                        },
-                    },
-                    "quantity": 1,
-                },
-            ],
-            customer_creation="always",
-            success_url=settings.REDIRECT_DOMAIN
-            + "/payment_successful_flight?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=settings.REDIRECT_DOMAIN + "/payment_cancelled",
-            )
-        book_flight=FlightBooking.objects.create(flight=flight, user_id=request.user.id, amount=predicted_price, status=False,transaction_id=checkout_session.id)
-        book_flight.save()
-        return redirect(checkout_session.url, code=303)
-            
-    return render(request, 'book.html')
-    

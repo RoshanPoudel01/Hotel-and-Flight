@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import BookingForm
-
 from payment.models import UserPayment
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required
@@ -9,7 +8,9 @@ from .models import Booking
 import stripe
 from datetime import date
 from django.conf import settings
-
+from flight.models import Flight
+from bookings.models import FlightBooking
+import math 
 
 
 
@@ -83,3 +84,60 @@ def cancelBooking(request):
     payment.save()
     return redirect(reverse("booking:booking_history", args=(request.user.id,)))
 
+
+@login_required
+def book_flight(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    if request.method == 'POST':
+        flight_id = int(request.POST.get('flightid'))
+        predicted_price = float(request.POST.get('price'))
+        flight=Flight.objects.get(id=flight_id)
+      
+        checkout_session=stripe.checkout.Session.create(
+            mode="payment",
+             line_items=[
+                {
+                    "price_data": {
+                        "currency": "usd",
+                        "unit_amount": math.floor(predicted_price)*100,
+                        "product_data": {
+                            "name": "Flight booking",
+                        },
+                    },
+                    "quantity": 1,
+                },
+            ],
+            customer_creation="always",
+            success_url=settings.REDIRECT_DOMAIN
+            + "/payment_successful_flight?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=settings.REDIRECT_DOMAIN + "/payment_cancelled",
+            )
+        book_flight=FlightBooking.objects.create(flight=flight, user_id=request.user.id, amount=predicted_price, status=False,transaction_id=checkout_session.id)
+        book_flight.save()
+        return redirect(checkout_session.url, code=303)
+            
+    return render(request, 'book.html')
+    
+
+
+@login_required
+def flightbookingHistory(request, userid):
+    today = date.today()
+    bookinghistory = FlightBooking.objects.filter(user_id=userid,status=True)
+    upcomingbookings = FlightBooking.objects.filter(user_id=userid,status=True)
+    # upcomingbookings = FlightBooking.objects.filter(user_id=userid, check_in_date__gte=today, status=True)
+    return render(request, "flight_bookings.html", {"booking": bookinghistory,"upcomingbookings":upcomingbookings})
+
+@login_required
+def cancelFlightBooking(request):
+    bookingid=request.POST.get("bookingid")
+    booking=FlightBooking.objects.get(id=bookingid)
+    payment=UserPayment.objects.get(stripe_checkout_id=booking.transaction_id)
+    booking.status=False
+    final_amount=booking.amount-booking.amount*0.8
+    booking.amount=final_amount
+    payment.amount=final_amount
+    booking.save()
+    payment.save()
+    return redirect(reverse("booking:booking_history", args=(request.user.id,)))

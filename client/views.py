@@ -77,13 +77,14 @@ def add_phone(request,hotelid):
 def add_images(request,hotelid):
     hotel = get_object_or_404(Hotel, id=hotelid)
     form =ImageForm(request.POST or None, request.FILES or None)
-    if form.is_valid() and request.method=="POST":
-        images=request.FILES.getlist('image')
+    images=request.FILES.getlist('image')
+    if form.is_valid() :
         for i in images:
             imag=Image.objects.create(image=i,hotel=hotel)
             imag.save()
         return HttpResponseRedirect(reverse("client:list_hotel"))
     return render(request,"add_image.html",{"image":form})
+    
 
 @login_required
 @user_passes_test(user_check,redirect_field_name="hotel:homepage")

@@ -1,6 +1,6 @@
 from django.db import models
 from useraccount.models import User
-
+from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 class TimeStamp(models.Model):
@@ -39,7 +39,7 @@ class Hotel(TimeStamp):
         return amenities_list
 
 class Image(models.Model):
-    image = models.ImageField(upload_to="hotelimages", blank=True, null=True)
+    image = models.ImageField(upload_to="hotelimages", blank=True, null=True )
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE,related_name="hotel_image")
     def __str__(self):
         return self.hotel.hotel_name

@@ -1,34 +1,222 @@
-{% extends 'base_site.html' %} 
-{% block maincontent %}
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
-  <div class="card p-4">
-    <div class="image d-flex flex-column justify-content-center align-items-center">
-      <a class="btn ">
-        {% if user.image %}
-        <img src="{{ user.image.url }}" alt="image" class="img-responsive" height="200px" width="200px"></a>
+{% extends 'base_site.html' %} {% block maincontent %}
+<style>
+  body {
+    margin-top: 20px;
+    color: #1a202c;
+    text-align: left;
+    background-color: #e2e8f0;
+  }
+  .main-body {
+    padding: 15px;
+  }
+  .card {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
 
-        {% else %}
-        {% load static %}
-        <img src="{% static 'images/user.png' %}" alt="default image" class="img-responsive w-100"></a>
-        
-        {% endif %}
-      
-        </a>
-      <span class="name mt-3">{{users.first_name }} {{ users.last_name}}</span>
-      <span class="idd">@{{users.username}}</span>
-     
-     
-      <div class="d-flex mt-2">
-        <button class="btn btn-dark"><a href="{% url 'user:edit_profile' user.id%}">Edit Profile</a></button>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+  }
+
+  .card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1rem;
+  }
+
+  .gutters-sm {
+    margin-right: -8px;
+    margin-left: -8px;
+  }
+
+  .gutters-sm > .col,
+  .gutters-sm > [class*="col-"] {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+  .mb-3,
+  .my-3 {
+    margin-bottom: 1rem !important;
+  }
+
+  .bg-gray-300 {
+    background-color: #e2e8f0;
+  }
+  .h-100 {
+    height: 100% !important;
+  }
+  .shadow-none {
+    box-shadow: none !important;
+  }
+</style>
+
+<div class="container">
+  <div class="main-body">
+    <!-- /Breadcrumb -->
+
+    <div class="row gutters-sm">
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+              {% if user.image %}
+              <img
+                src="{{ user.image.url }}"
+                alt="{{users.username}}"
+                class="rounded-circle"
+                width="150"
+              />
+              {% else %} {% load static %}
+              <img
+                src="{% static 'images/user.png' %}"
+                alt="Profile Picture"
+                class="rounded-circle"
+                width="150"
+              />
+              {% endif %}
+              <div class="mt-3">
+                <h4>{{users.first_name }} {{ users.last_name}}</h4>
+                <p class="text-secondary mb-1">@{{users.username}}</p>
+                <p class="text-muted font-size-sm">{{users.email}}</p>
+                <a href="{% url 'booking:booking_history' user.id%}"
+                  ><button class="btn btn-primary">Hotel Bookings</button></a
+                >
+                <a href="{% url 'booking:flight_booking_history' user.id%}">
+                  <button class="btn btn-secondary">Flight Bookings</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-         <div class="d-flex mt-2">
-        <button class="btn btn-primary"><a href="{% url 'booking:booking_history' user.id%}">Bookings</a></button>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Full Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{users.first_name }} {{ users.last_name}}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">UserName</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">{{users.username }}</div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">{{users.email}}</div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Phone</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">{{users.phone}}</div>
+            </div>
+            <hr />
+
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Address</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">{{users.address}}</div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-12">
+                <a
+                  class="btn btn-info"
+                  target="__blank"
+                  href="{% url 'user:edit_profile' user.id%}"
+                  >Edit</a
+                >
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrop"
+                >
+                  Launch static backdrop modal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-     
-      <div class="px-2 rounded mt-4 date">
-        <span class="join">{{users.date_joined}}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Edit Profile</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
-      
+      <div class="modal-body">
+        <form method="POST" enctype="multipart/form-data"> 
+     {% csrf_token %}
+  
+    {{ form.non_field_errors }}
+    {% for user in userprofile%}
+     <div class="form-group my-2">
+        <label> {{user.label_tag}}</label>
+        {{ user }}
+        <span class="text text-danger">{{ user.errors }}</span>
+    
+   
+    {% endfor %}
+
+
+    {% for field in form%}
+     <div class="form-group my-2">
+        <label> {{field.label_tag}}</label>
+        {{ field }}
+        <span class="text text-danger">{{ field.errors }}</span>
+    
+   
+    {% endfor %}
+</form>
+    <input type="submit" class="btn btn-primary" value="Submit">
+</form>
+</div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+       
+      </div>
     </div>
   </div>
 </div>

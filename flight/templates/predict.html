@@ -37,7 +37,7 @@
 <div>
   <p class="text text-center">Predicted Price=Rs.{{prediction_text}}</p>
   <p>{{arrival_date}}</p>
-  <form method="post" action="{% url 'flight:book_flight' %}">
+  <form method="post" action="{% url 'booking:book_flight' %}">
     {% csrf_token %}
     <input type="text" name="flightid" value="{{flightid}}" />
     <input type="text" name="price" value="{{prediction_text}}" />

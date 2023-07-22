@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "useraccount",
     "bookings",
     "payment",
+    "import_export",
 ]
 
 MIDDLEWARE = [
@@ -159,4 +160,4 @@ if DEBUG:
     STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 
-REDIRECT_DOMAIN = 'http://127.0.0.1:8080'
+REDIRECT_DOMAIN = 'http://127.0.0.1:8000'
