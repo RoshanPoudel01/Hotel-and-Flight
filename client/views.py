@@ -81,14 +81,23 @@ def add_phone(request,hotelid):
         return HttpResponseRedirect(reverse("client:list_hotel"))
     return render(request,"add_phone.html",{"phone":form})
 
+def is_valid_image(file):
+    # List of accepted image file formats
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.gif']
+    return any(file.name.lower().endswith(ext) for ext in valid_extensions)
+
 @login_required
 @user_passes_test(user_check,redirect_field_name="hotel:homepage")
 def add_images(request,hotelid):
+   
     hotel = get_object_or_404(Hotel, id=hotelid)
     form =ImageForm(request.POST or None, request.FILES or None)
     images=request.FILES.getlist('image')
-    if form.is_valid() :
+    if request.method == 'POST':
         for i in images:
+            if not is_valid_image(i):
+                messages.error(request, 'File type is not supported. Supported File are of type: jpg, jpeg, png, gif')
+                return HttpResponseRedirect(reverse("client:add_image", kwargs={'hotelid':hotelid}))
             imag=Image.objects.create(image=i,hotel=hotel)
             imag.save()
             messages.success(request, "Hotel Image Added Successfully")

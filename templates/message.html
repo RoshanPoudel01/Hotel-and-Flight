@@ -6,14 +6,35 @@
   }
 </style>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   setTimeout(function () {
     $(".alert").alert("close");
   }, 1000);
+</script> -->
+<script type="text/javascript">
+  setTimeout(function () {
+    $(".alert").fadeOut("slow");
+  }, 15000); // Auto-close after 15 seconds
+
+  $(".alert").on("close.bs.alert", function () {
+    // User closed the alert
+    $(this).fadeOut("fast");
+  });
 </script>
 
-{% if messages %} {% for message in messages %}
-<div class="alert alert-{{ message.tags }} fade show" role="alert" id="alert">
+{% if messages %} 
+{% for message in messages %}
+ {% if message.tags == 'success'%}
+
+ <div class="alert alert-{{ message.tags }} fade show d-flex justify-content-between align-items-center" role="alert" id="alert">
   <strong>{{ message }}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
 </div>
-{% endfor %} {% endif %}
+{% endif %} {% if message.tags == 'error' %}
+<div class="alert alert-danger fade show d-flex justify-content-between align-items-center" role="alert" id="alert">
+  <strong>{{ message }}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endif %} {% endfor %} {% endif %}
