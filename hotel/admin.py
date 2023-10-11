@@ -10,7 +10,7 @@ class AmenitiesAdmin(admin.ModelAdmin):
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ("hotel_name", "email", "city" )
+    list_display = ("hotel_name", "email", "city","added_by" )
     list_filter = ("city",)
     search_fields = ("hotel_name", "country", "city")
     actions = ["export_as_csv"]

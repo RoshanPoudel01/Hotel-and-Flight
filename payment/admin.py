@@ -6,7 +6,7 @@ from django.http import HttpResponse
 # Register your models here.
 @admin.register(UserPayment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ("app_user", "payment_bool", "stripe_checkout_id", "created_at")
+    list_display = ("app_user", "payment_bool", "stripe_checkout_id","amount", "created_at")
     actions = ["export_as_csv"]
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
@@ -26,7 +26,7 @@ class PaymentAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-    def has_change_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
+    # def has_change_permission(self, request, obj=None):
+    #     return False

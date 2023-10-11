@@ -1,12 +1,15 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView
 from django.contrib.auth import get_user_model
 from useraccount.forms import UserSignupForm, UserEditForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.contrib import messages 
 
 import stripe
 stripe.api_key = "sk_test_51N2DKlBDe5c2rfDAZlaYAUJWD6ORem7RLEZFoDAZcKyPx55mSltZ2L2KrgeHboSO7hr7pSzcO1OpvGVhdosoeEDW00VrQx4XTO"
@@ -75,6 +78,46 @@ def user_profile_edit(request, id):
         )
 
     return render(request, "profile_edit.html", {"userprofile": userss})
+@login_required
+def password_change(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            # return redirect('user:userprofile')
+            return HttpResponseRedirect(
+            reverse(
+                "user:userprofile",
+                args=(
+                    user.username,
+                    user.id,
+                ),
+            )
+        )
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'changepassword.html', {
+        'form': form
+    })
+# @login_required
+# def password_change(request,id):
+#     user=get_object_or_404(User,id=id,username=request.user)
+#     userform=PasswordChangeForm(request.POST or None,request.FILES or None)
+#     if userform.is_valid():
+#         userform.save()
+#         return HttpResponseRedirect(
+#             reverse(
+#                 "user:userprofile",
+#                 args=(
+#                     user.username,
+#                     user.id,
+#                 ),
+#             )
+#         )
+
+#     return render(request, "changepassword.html", {"userprofile": userform})
 
 
 

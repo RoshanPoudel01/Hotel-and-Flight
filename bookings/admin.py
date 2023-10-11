@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ("hotel", "status", "amount", "user", "created_at")
+    list_display = ("hotel", "status", "amount", "user","transaction_id", "created_at")
     list_filter = ("hotel",)
     actions = ["export_as_csv"]
     def export_as_csv(self, request, queryset):

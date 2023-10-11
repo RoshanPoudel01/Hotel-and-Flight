@@ -9,6 +9,7 @@ import csv
 from django.contrib import messages 
 
 from bookings.models import Booking
+from payment.models import UserPayment
 
 def user_check(user):
     return user.is_client
@@ -16,8 +17,22 @@ def user_check(user):
 @login_required
 @user_passes_test(user_check,redirect_field_name="hotel:homepage")
 def clientdashboard(request):
-    hotel=Hotel.objects.filter(added_by=request.user)
-    return render(request,'dashboard.html',{'hotells':hotel})
+    user=request.user
+    hotels_added_by_user = Hotel.objects.filter(added_by=user)
+    hotel_count=hotels_added_by_user.count()
+    if hotels_added_by_user:
+         # Retrieve all bookings related to hotels added by the current user
+        bookings = Booking.objects.filter(hotel__in=hotels_added_by_user)
+        print(bookings)
+
+        # Create a list to store the transaction IDs of the bookings
+        transaction_ids = [booking.transaction_id for booking in bookings]
+    
+        # Retrieve payments related to these transaction IDs
+        payments = UserPayment.objects.filter(stripe_checkout_id__in=transaction_ids)
+        total_payment = sum(float(payment.amount) for payment in payments)
+      
+        return render(request,'dashboard.html',{'hotelcount':hotel_count,"bookingcount":bookings.count(),"totalpayment":total_payment})
 
 @login_required
 @user_passes_test(user_check,redirect_field_name="hotel:homepage")
@@ -205,3 +220,56 @@ def export_hotels(request):
     for hotel in hotels:
         writer.writerow([ hotel.hotel_name, hotel.email,hotel.city,hotel.price_per_day])
     return response
+
+
+
+
+
+
+@login_required
+@user_passes_test(user_check,redirect_field_name="hotel:homepage")
+def list_payments(request):
+    user=request.user
+    hotels_added_by_user = Hotel.objects.filter(added_by=user)
+    if hotels_added_by_user:
+         # Retrieve all bookings related to hotels added by the current user
+        bookings = Booking.objects.filter(hotel__in=hotels_added_by_user)
+
+        # Create a list to store the transaction IDs of the bookings
+        transaction_ids = [booking.transaction_id for booking in bookings]
+    
+        # Retrieve payments related to these transaction IDs
+        payments = UserPayment.objects.filter(stripe_checkout_id__in=transaction_ids)
+    
+   
+    
+    return render(request,'payment.html',{'payments': payments})
+
+
+@login_required
+@user_passes_test(user_check,redirect_field_name="client:list_payments")
+def export_payments(request):
+    user=request.user
+    hotels_added_by_user = Hotel.objects.filter(added_by=user)
+    if hotels_added_by_user:
+         # Retrieve all bookings related to hotels added by the current user
+        bookings = Booking.objects.filter(hotel__in=hotels_added_by_user)
+
+        # Create a list to store the transaction IDs of the bookings
+        transaction_ids = [booking.transaction_id for booking in bookings]
+    
+        # Retrieve payments related to these transaction IDs
+        payments = UserPayment.objects.filter(stripe_checkout_id__in=transaction_ids)
+    
+   
+        response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="payment.csv"'},
+    )
+    
+        writer = csv.writer(response)
+        writer.writerow(["Amount", "Paid Date", "Updated Date","Status"])
+
+        for payment in payments:
+            writer.writerow([payment.amount, payment.created_at,payment.modified_at,payment.payment_bool])
+        return response

@@ -90,3 +90,5 @@ def sort_hotel(request):
     
 
 
+def termsandconditions(request):
+    return render(request ,"terms.html")

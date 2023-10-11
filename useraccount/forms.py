@@ -26,6 +26,11 @@ class UserSignupForm(UserCreationForm):
         max_length=100,
         error_messages={"invalid": "Invalid Email! Please insert a valid Email"},
     )
+    address = forms.CharField(
+        max_length=100,
+        validators=[RegexValidator(r"^[a-zA-Z0-9_.-]*$")],
+        error_messages={"invalid": "Please insert a valid Address"},
+    )
 
     class Meta:
         model = User
@@ -34,8 +39,6 @@ class UserSignupForm(UserCreationForm):
             "last_name",
             "email",
             "username",
-            "password1",
-            "password2",
             "address",
             "phone",
             "image",
@@ -46,6 +49,17 @@ class UserSignupForm(UserCreationForm):
         # self.fields["name"].widget.attrs["class"] = "form-control"   this is used to customize single field
         for visible in self.visible_fields():
             visible.field.widget.attrs["class"] = "form-control"
+class PasswordChangeForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields = ("__all__")
+        
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+        # self.fields["name"].widget.attrs["class"] = "form-control"   this is used to customize single field
+            for visible in self.visible_fields():
+                visible.field.widget.attrs["class"] = "form-control"
+
 
 
 class UserEditForm(forms.ModelForm):
